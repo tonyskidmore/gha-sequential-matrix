@@ -1,0 +1,58 @@
+---
+
+name: 'Workflow'
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+
+  first_job:
+    name: First Job
+    runs-on: ubuntu-latest
+    outputs:
+      depends: ${{ steps.random.outputs.boolean }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Change files script
+      id: random
+      run: |
+        var=$(( (0 + $RANDOM % 2) ))
+        echo "boolean=$var" >> "$GITHUB_OUTPUT"
+        
+  second_job:
+    name: 'Second Job'
+    # if: needs.load_config.outputs.config != '{}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stage: ['dev', 'tst', 'prd']
+      fail-fast: true
+      max-parallel: 1
+    needs: first_job
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Matrix check
+      run: |
+        echo "stage: ${{ matrix.stage }}"
+      
