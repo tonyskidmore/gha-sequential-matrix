@@ -70,4 +70,4 @@ jobs:
 
     - name: Terraform fmt
       run: |
-        echo "terraform -chdir="$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
+        echo "terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
