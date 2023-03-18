@@ -10,6 +10,11 @@ on:
         required: true
         type: boolean
         default: true
+      inOrder:
+        description: 'Run in order'
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -21,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix_order: ${{ steps.set_matrix.outputs.matrix }}
+      matrix_max_parallel: ${{ steps.set_matrix.outputs.matrix_parallel }}
+      matrix_fail_fast: ${{ steps.set_matrix.outputs.matrix_fail_fast }}
     defaults:
       run:
         shell: bash
@@ -33,7 +40,17 @@ jobs:
     - name: Create matrix order
       id: set_matrix
       run: |
-        echo "input: ${{ github.event.inputs.runDev }}"
+        echo "input: ${{ github.event.inputs.inOrder }}"
+
+        if [[ "${{ github.event.inputs.inOrder}}" == "true" ]]
+        then
+          matrix_parallel=1
+          matrix_fail_fast="true"
+        else
+          matrix_parallel=2
+          matrix_fail_fast="false"
+        fi
+
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
           matrix='{"stage": ["dev","tst"]}'
@@ -42,7 +59,12 @@ jobs:
         fi
 
         jq <<< "$matrix"
+        echo "matrix_max_parallel=$matrix_max_parallel"
+        echo "matrix_fail_fast=$matrix_fail_fast"
+
         echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+        echo "matrix_max_parallel=$matrix_max_parallel" >> "$GITHUB_OUTPUT"
+        echo "matrix_fail_fast=$matrix_fail_fast" >> "$GITHUB_OUTPUT"
 
   second_job:
     name: 'Second Job'
@@ -50,8 +72,8 @@ jobs:
     needs: first_job
     strategy:
       matrix: ${{fromJson(needs.first_job.outputs.matrix_order)}}
-      fail-fast: true
-      max-parallel: 1
+      fail-fast: ${{needs.first_job.outputs.matrix_fail_fast}}
+      max-parallel: ${{needs.first_job.outputs.matrix_max_parallel}}
     defaults:
       run:
         shell: bash
@@ -72,9 +94,15 @@ jobs:
       env:
         OUTPUT: ${{needs.first_job.outputs.matrix_order}}
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Version
+      run: terraform --version
+
     - name: Terraform fmt
       run: |
-        echo "terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
+        terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive
 
     - name: Ended
       run: |
