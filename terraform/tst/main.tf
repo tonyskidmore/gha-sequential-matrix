@@ -1,5 +1,5 @@
 variable "length" {
-  type = number
+  type        = number
   description = "Length of random string"
 }
 
