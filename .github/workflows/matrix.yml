@@ -3,6 +3,7 @@
 name: 'Workflow'
 
 on:
+  # manually run to test with inputs
   workflow_dispatch:
     inputs:
       runDev:
@@ -36,7 +37,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Create matrix order
+    - name: Set strategy/matrix
       id: set_matrix
       run: |
 
@@ -75,7 +76,6 @@ jobs:
     needs: first_job
     # use the entire constructed strategy
     strategy: ${{fromJson(needs.first_job.outputs.strategy)}}
-    # strategy: ${{fromJson('{"matrix":{"stage":["dev","tst"]},"fail-fast":true,"max-parallel":1}')}}
     # or just using the dynamic "matrix" ouput and hardcoding fail-fast and max-parallel
     # strategy:
     #   matrix: ${{fromJson(needs.first_job.outputs.matrix_order)}}
@@ -94,13 +94,6 @@ jobs:
       run: |
         date
 
-
-    - name: Check output
-      run: |
-        echo "OUTPUT: $OUTPUT"
-      env:
-        OUTPUT: ${{needs.first_job.outputs.matrix_order}}
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
@@ -109,6 +102,7 @@ jobs:
 
     - name: Terraform fmt
       run: |
+        echo "Running: terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive -diff"
         terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive -diff
 
     - name: Ended
