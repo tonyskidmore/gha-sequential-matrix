@@ -61,6 +61,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Started
+      run: |
+        date
+
+
     - name: Check output
       run: |
         echo "OUTPUT: $OUTPUT"
@@ -70,3 +75,7 @@ jobs:
     - name: Terraform fmt
       run: |
         echo "terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
+
+    - name: Ended
+      run: |
+        date
