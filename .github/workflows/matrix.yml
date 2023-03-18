@@ -20,7 +20,7 @@ jobs:
     name: First Job
     runs-on: ubuntu-latest
     outputs:
-      matrix_order: ${{ steps.matrix_order.outputs.matrix }}
+      matrix_order: ${{ steps.set_matrix.outputs.matrix }}
     defaults:
       run:
         shell: bash
@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Create matrix order
-      id: matrix_order
+      id: set_matrix
       run: |
         echo "input: ${{ github.event.inputs.runDev }}"
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
@@ -65,7 +65,7 @@ jobs:
 
     - name: Check output
       run: |
-        echo ${{ fromJson(needs.first_job.outputs.matrix) }}
+        echo ${{ needs.first_job.outputs.matrix_order }}
 
     - name: Terraform fmt
       run: |
