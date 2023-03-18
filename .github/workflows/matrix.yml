@@ -29,7 +29,8 @@ jobs:
     - name: Change files script
       id: matrix_order
       run: |
-        if [[ ${{ github.event.inputs.runDev }}
+        if [[ ${{ github.event.inputs.runDev }} == "true" ]]
+        then
           echo "matrix_order='[dev, tst]'" >> "$GITHUB_OUTPUT"
         else
           echo "matrix_order='[tst]'" >> "$GITHUB_OUTPUT"
