@@ -50,7 +50,7 @@ jobs:
     needs: first_job
     strategy:
       matrix:
-        stage: ${{ needs.first_job.outputs.matrix_order) }}
+        stage: ${{ fromJson(needs.first_job.outputs.matrix_order) }}
       fail-fast: true
       max-parallel: 1
     defaults:
@@ -62,10 +62,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Check output
-      run: |
-        echo ${{ needs.first_job.outputs.matrix_order }}
-
     - name: Terraform fmt
       run: |
-        echo "terraform -chdir=$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
+        echo "terraform -chdir="$GITHUB_WORKSPACE/terraform/${{ matrix.stage }} fmt -check -recursive"
