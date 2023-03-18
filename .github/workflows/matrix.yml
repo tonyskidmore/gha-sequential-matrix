@@ -65,9 +65,8 @@ jobs:
     - name: Check output
       run: |
         echo "OUTPUT: $OUTPUT"
-        # echo ${{ fromJson(needs.first_job.outputs.matrix_order) }}
       env:
-        OUTPUT: ${{ needs.first_job.outputs.matrix_order }}
+        OUTPUT: ${{needs.first_job.outputs.matrix_order}}
 
     - name: Terraform fmt
       run: |
