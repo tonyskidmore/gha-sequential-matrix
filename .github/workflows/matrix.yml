@@ -17,7 +17,7 @@ jobs:
     name: First Job
     runs-on: ubuntu-latest
     outputs:
-      matrix_order: ${{ steps.random.outputs.matrix_order }}
+      matrix_order: ${{ steps.matrix_order.outputs.matrix_order }}
     defaults:
       run:
         shell: bash
@@ -27,7 +27,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Change files script
+    - name: Create matrix order
       id: matrix_order
       run: |
         echo "input: ${{ github.event.inputs.runDev }}"
