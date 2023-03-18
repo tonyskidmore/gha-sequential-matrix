@@ -37,11 +37,11 @@ jobs:
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
           # {"stage": ["dev","tst"]}
-          echo "matrix=[dev, tst]"
-          echo "matrix=[dev, tst]" >> "$GITHUB_OUTPUT"
+          echo "matrix=["dev", "tst"]"
+          echo "matrix=["dev", "tst"]" >> "$GITHUB_OUTPUT"
         else
-          echo "matrix=[tst]"
-          echo "matrix=[tst]" >> "$GITHUB_OUTPUT"
+          echo "matrix=["tst"]"
+          echo "matrix=["tst"]" >> "$GITHUB_OUTPUT"
         fi
 
   second_job:
