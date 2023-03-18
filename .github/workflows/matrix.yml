@@ -53,16 +53,16 @@ jobs:
         # or compile the whole strategy
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
-          strategy='{matrix":{"stage": ["dev","tst"]}'
+          strategy='{"matrix":{"stage": ["dev","tst"]}'
         else
-          strategy='{matrix":{"stage": ["tst"]}'
+          strategy='{"matrix":{"stage": ["tst"]}'
         fi
 
         if [[ "${{ github.event.inputs.inOrder }}" == "true" ]]
         then
-          strategy="${strategy},"fail-fast":true,"max-parallel":1}'"
+          strategy+=',"fail-fast":true,"max-parallel":1}'
         else
-          strategy="${strategy},"fail-fast":false,"max-parallel":2}'"
+          strategy+=',"fail-fast":false,"max-parallel":2}'
         fi
 
         echo "strategy=$strategy"
