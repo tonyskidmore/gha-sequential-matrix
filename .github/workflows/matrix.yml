@@ -70,10 +70,11 @@ jobs:
     name: 'Second Job'
     runs-on: ubuntu-latest
     needs: first_job
-    strategy:
-      matrix: ${{fromJson(needs.first_job.outputs.matrix_order)}}
-      fail-fast: ${{needs.first_job.outputs.matrix_fail_fast}}
-      max-parallel: ${{needs.first_job.outputs.matrix_max_parallel}}
+    strategy: ${{fromJson('{"matrix":{"stage":["dev","tst"]},"fail-fast":true,"max-parallel":1}')}}
+    # strategy:
+    #   matrix: ${{fromJson(needs.first_job.outputs.matrix_order)}}
+    #   fail-fast: ${{needs.first_job.outputs.matrix_fail_fast}}
+    #   max-parallel: ${{needs.first_job.outputs.matrix_max_parallel}}
     defaults:
       run:
         shell: bash
