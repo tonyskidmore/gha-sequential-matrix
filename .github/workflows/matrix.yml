@@ -36,13 +36,13 @@ jobs:
         echo "input: ${{ github.event.inputs.runDev }}"
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
-          # {"stage": ["dev","tst"]}
-          echo "matrix={"stage": ["dev","tst"]}"
-          echo "matrix={"stage": ["dev","tst"]}" >> "$GITHUB_OUTPUT"
+          matrix='{"stage": ["dev","tst"]}'
         else
-          echo "matrix={"stage": ["tst"]}"
-          echo "matrix={"stage": ["tst"]}" >> "$GITHUB_OUTPUT"
+          matrix='{"stage": ["tst"]}'
         fi
+
+        jq <<< "$matrix"
+        echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   second_job:
     name: 'Second Job'
