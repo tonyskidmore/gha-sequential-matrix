@@ -37,11 +37,11 @@ jobs:
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
           # {"stage": ["dev","tst"]}
-          echo "matrix=["dev", "tst"]"
-          echo "matrix=["dev", "tst"]" >> "$GITHUB_OUTPUT"
+          echo "matrix={"stage": ["dev","tst"]}"
+          echo "matrix={"stage": ["dev","tst"]}" >> "$GITHUB_OUTPUT"
         else
-          echo "matrix=["tst"]"
-          echo "matrix=["tst"]" >> "$GITHUB_OUTPUT"
+          echo "matrix={"stage": ["tst"]}"
+          echo "matrix={"stage": ["tst"]}" >> "$GITHUB_OUTPUT"
         fi
 
   second_job:
@@ -49,8 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: first_job
     strategy:
-      matrix:
-        stage: ${{fromJson(needs.first_job.outputs.matrix_order)}}
+      matrix: ${{fromJson(needs.first_job.outputs.matrix_order)}}
       fail-fast: true
       max-parallel: 1
     defaults:
