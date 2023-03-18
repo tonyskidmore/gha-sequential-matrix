@@ -17,7 +17,7 @@ jobs:
     name: First Job
     runs-on: ubuntu-latest
     outputs:
-      matrix_order: ${{ steps.matrix_order.outputs.matrix_order }}
+      matrix_order: ${{ steps.matrix_order.outputs.matrix }}
     defaults:
       run:
         shell: bash
@@ -34,9 +34,11 @@ jobs:
         if [[ "${{ github.event.inputs.runDev }}" == "true" ]]
         then
           # {"stage": ["dev","tst"]}
-          echo "matrix_order=[dev, tst]" >> "$GITHUB_OUTPUT"
+          echo "matrix=[dev, tst]"
+          echo "matrix=[dev, tst]" >> "$GITHUB_OUTPUT"
         else
-          echo "matrix_order=[tst]" >> "$GITHUB_OUTPUT"
+          echo "matrix=[tst]"
+          echo "matrix=[tst]" >> "$GITHUB_OUTPUT"
         fi
 
   second_job:
@@ -46,7 +48,7 @@ jobs:
     needs: first_job
     strategy:
       matrix:
-        stage: ${{fromJson(needs.first_job.outputs.matrix_order)}}
+        stage: ${{fromJson(needs.first_job.outputs.matrix)}}
       fail-fast: true
       max-parallel: 1
     defaults:
