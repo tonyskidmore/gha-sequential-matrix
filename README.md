@@ -35,7 +35,7 @@ This also allows for the `stage` values to be dynamically constructed.  So, for 
 
 ![uncheck dev](images/workflow_dispatch_inputs_no_dev_no_order.png)
 
-which would construct the matrix as follows:
+would construct the matrix as follows:
 
 ````yaml
 
