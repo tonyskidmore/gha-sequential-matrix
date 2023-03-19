@@ -6,6 +6,8 @@ The example uses `workflow_dispatch` to allow the workflow to be executed manual
 
 ![inputs all selected](images/workflow_dispatch_inputs.png)
 
+<img src="https://github.com/tonyskidmore/gha-sequential-matrix/blob/main/images/workflow_dispatch_inputs.png?raw=true" width=50% height=50%>
+
 When the default inputs are selected, the workflow will dynamically construct a strategy matrix in JSON during the execution of the `First Job`.  The JSON will be taken as an output from the first job and used as the value for the `strategy:` key of the `Second Job`.  It uses [fromJSON](https://docs.github.com/en/actions/learn-github-actions/expressions#fromjson) to take the JSON string and parse it into something GitHub Actions can understand.  
 
 The result is the following being dynamically constructed:
